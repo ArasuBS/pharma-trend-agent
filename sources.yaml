@@ -1,0 +1,108 @@
+# Sources and topic config for the pharma trend digest agent.
+#
+# TO SWITCH WHAT YOU'RE TRACKING: edit the `topics` list at the bottom
+# of this file. Nothing else needs to change — no code edits required.
+
+# ---- Lookback window -------------------------------------------------
+# CONFIRMED: PubMed genuinely reaches back 365 days — it supports real
+# date-range search, so this window is fully honored there.
+# RSS feeds do NOT reach back 365 days no matter what this is set to.
+# RSS as a format only ever exposes each publisher's most recent items
+# (usually the last few weeks) — that's a limitation of RSS itself, not
+# something this setting can override. This value just makes sure the
+# RSS filter doesn't discard older items a feed happens to still be
+# showing. PubMed is the source that actually benefits from the full
+# 12-month window.
+lookback_days: 365
+
+# ---- RSS feeds ---------------------------------------------------------
+# Checked against every topic below each run — one shared pool of news/
+# journal items, filtered per topic.
+rss_feeds:
+  fierce_pharma: "https://www.fiercepharma.com/rss.xml"
+  endpoints_news: "https://endpts.com/feed/"
+  stat_news: "https://www.statnews.com/feed/"
+  nature_biotechnology: "https://www.nature.com/nbt.rss"
+  nature_reviews_drug_discovery: "https://www.nature.com/nrd.rss"
+  cell: "https://www.cell.com/cell/current.rss"
+  science: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
+# NOTE: journal RSS URLs change occasionally when publishers restructure
+# their sites. After setup, run the agent once manually and check the
+# console warnings — if a feed shows "failed to parse," search
+# "<journal name> RSS feed" to find the current URL and swap it in here.
+
+# ---- Web search ----------------------------------------------------------
+# Runs per topic, alongside RSS/PubMed, to catch what feeds miss (deals,
+# funding, approvals, capacity expansions) and every finding it returns
+# is required to carry a source link — no unlinked claims make it into
+# the digest. For open-ended topics (no fixed keyword vocabulary, like
+# "new trends in drug discovery"), web search is the ONLY source, since
+# you can't keyword-filter for a tool whose name doesn't exist yet.
+enable_web_search: true
+# Adds roughly $0.05-0.10 per topic per run on top of the base RSS/
+# PubMed cost. With 5 topics, that's ~$0.25-0.50 extra per monthly run —
+# still a few dollars a year total. Set to false to skip web search
+# entirely (cheaper, but you lose deal/funding coverage and any
+# open-ended topic goes empty since it has nothing else to draw on).
+
+# ---- Topics --------------------------------------------------------------
+# Each topic becomes its own section in the digest, with its own
+# Signal Items / Quick Hits. Two kinds of topic entries:
+#
+#   Keyword-based topic — give a `keywords` list. Used to filter RSS/
+#     PubMed items AND to focus that topic's web search.
+#
+#   Open-ended topic — omit `keywords` and give a `search_prompt`
+#     instead. Used when there's no fixed vocabulary to filter on (a
+#     brand-new gene editing tool or assay won't match a pre-written
+#     keyword list) — relies entirely on web search using your prompt.
+#
+# To switch topics: delete an entry, add a new one, or edit keywords —
+# that's the whole process.
+
+topics:
+  - name: "ADC"
+    keywords:
+      - ADC
+      - antibody-drug conjugate
+      - bioconjugation
+      - payload
+      - linker technology
+      - conjugation platform
+
+  - name: "Bispecifics"
+    keywords:
+      - bispecific antibody
+      - bispecific
+      - dual-targeting antibody
+      - T-cell engager
+      - BiTE
+      - trispecific
+
+  - name: "Cell Line Development"
+    keywords:
+      - cell line development
+      - CHO cell
+      - clone selection
+      - high-titer expression
+      - stable cell line
+      - cell line engineering
+
+  - name: "NAMs (New Approach Methodologies)"
+    keywords:
+      - organoid
+      - patient-derived organoid
+      - new approach methodology
+      - organ-on-chip
+      - microphysiological system
+      - 3D tissue model
+
+  - name: "New Trends in Drug Discovery"
+    # Open-ended — no keyword filter, relies entirely on web search.
+    search_prompt: >
+      Look for genuinely NEW tools, technologies, or methods in drug
+      discovery from the past 30-60 days — things like a new gene
+      editing tool or technique, a new lab assay, a new biophysical
+      characterization instrument, a novel screening platform, or a
+      similarly concrete new capability entering the field. Prioritize
+      specific named tools/technologies over general trend commentary.
