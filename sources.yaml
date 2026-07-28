@@ -1,0 +1,59 @@
+# Sources and filter config for the pharma trend digest agent.
+# Edit this file any time to add/remove feeds or change keywords —
+# no code changes needed.
+
+rss_feeds:
+  fierce_pharma: "https://www.fiercepharma.com/rss.xml"
+  endpoints_news: "https://endpts.com/feed/"
+  stat_news: "https://www.statnews.com/feed/"
+  nature_biotechnology: "https://www.nature.com/nbt.rss"
+  nature_reviews_drug_discovery: "https://www.nature.com/nrd.rss"
+  cell: "https://www.cell.com/cell/current.rss"
+  science: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
+
+# NOTE: journal RSS URLs change occasionally when publishers restructure
+# their sites. Run the agent once manually after setup and check the
+# console warnings — if a feed shows "failed to parse," search
+# "<journal name> RSS feed" to find the current URL and swap it in here.
+
+pubmed:
+  # Combines the ADC modality lens with the broad discovery/CDMO/mfg net
+  # PubMed has real date-range search, so this genuinely reaches back a year.
+  query: "(antibody-drug conjugate OR ADC) AND (drug discovery OR manufacturing OR CDMO OR bioconjugation)"
+  days_back: 365
+
+rss_lookback_days: 365
+# NOTE: RSS feeds only ever expose their most recent entries (usually the
+# last 20-50 items per feed) — there's no way to pull a year of history
+# from Fierce Pharma or a journal's RSS feed, that data simply isn't
+# published there. This setting is here so the filter doesn't accidentally
+# throw away older items a feed happens to still be showing, but in
+# practice RSS content will still just be "whatever's currently live,"
+# typically the last few weeks. PubMed is the source that actually
+# benefits from a full year of reach.
+
+enable_web_search: true
+# When true, the agent also runs 5-8 targeted web searches each month to
+# fill the gap RSS/PubMed can't reach (deals, funding, capacity expansions
+# that might not be in a feed yet). Adds ~$0.10-0.15 per run on top of the
+# ~$0.05-0.07 RSS/PubMed-only cost — still trivial at monthly cadence, but
+# set this to false if you want to stay on the cheaper RSS+PubMed-only path.
+
+modality_keywords:
+  - ADC
+  - antibody-drug conjugate
+  - bioconjugation
+  - payload
+  - linker technology
+  - conjugation platform
+
+broad_keywords:
+  - drug discovery
+  - CDMO
+  - contract manufacturing
+  - biologics manufacturing
+  - clinical trial
+  - FDA approval
+  - partnership
+  - acquisition
+  - licensing deal
