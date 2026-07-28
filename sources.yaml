@@ -1,0 +1,41 @@
+# Sources and filter config for the pharma trend digest agent.
+# Edit this file any time to add/remove feeds or change keywords —
+# no code changes needed.
+
+rss_feeds:
+  fierce_pharma: "https://www.fiercepharma.com/rss.xml"
+  endpoints_news: "https://endpts.com/feed/"
+  stat_news: "https://www.statnews.com/feed/"
+  nature_biotechnology: "https://www.nature.com/nbt.rss"
+  nature_reviews_drug_discovery: "https://www.nature.com/nrd.rss"
+  cell: "https://www.cell.com/cell/current.rss"
+  science: "https://www.science.org/action/showFeed?type=etoc&feed=rss&jc=science"
+
+# NOTE: journal RSS URLs change occasionally when publishers restructure
+# their sites. Run the agent once manually after setup and check the
+# console warnings — if a feed shows "failed to parse," search
+# "<journal name> RSS feed" to find the current URL and swap it in here.
+
+pubmed:
+  # Combines the ADC modality lens with the broad discovery/CDMO/mfg net
+  query: "(antibody-drug conjugate OR ADC) AND (drug discovery OR manufacturing OR CDMO OR bioconjugation)"
+  days_back: 7
+
+modality_keywords:
+  - ADC
+  - antibody-drug conjugate
+  - bioconjugation
+  - payload
+  - linker technology
+  - conjugation platform
+
+broad_keywords:
+  - drug discovery
+  - CDMO
+  - contract manufacturing
+  - biologics manufacturing
+  - clinical trial
+  - FDA approval
+  - partnership
+  - acquisition
+  - licensing deal

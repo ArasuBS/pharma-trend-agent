@@ -1,0 +1,34 @@
+name: Weekly Pharma Trend Digest
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"   # every Monday, 6:00 UTC (~11:30am IST)
+  workflow_dispatch: {}    # lets you trigger it manually from the Actions tab
+
+jobs:
+  build-digest:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run digest agent
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python pharma_trend_agent.py
+
+      - name: Commit digest back to repo
+        run: |
+          git config user.name "pharma-digest-bot"
+          git config user.email "actions@github.com"
+          git add digests/ linkedin_manual.md
+          git commit -m "Weekly pharma digest $(date +%Y-%m-%d)" || echo "nothing to commit"
+          git push
